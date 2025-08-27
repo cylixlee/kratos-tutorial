@@ -43,7 +43,7 @@ def run_command(cmd, shell=False):
         raise Exception(f"Command failed with exit code {e.returncode}") from e
 
 
-def init():
+def task_init():
     """Initialize environment by installing required tools"""
     tools = [
         "google.golang.org/protobuf/cmd/protoc-gen-go@latest",
@@ -58,7 +58,7 @@ def init():
         run_command(['go', 'install', tool])
 
 
-def generate_config():
+def task_config():
     """Generate internal proto files"""
     internal_proto_files = find_proto_files("internal")
     if not internal_proto_files:
@@ -75,7 +75,7 @@ def generate_config():
     run_command(cmd)
 
 
-def generate_api():
+def task_api():
     """Generate API proto files"""
     api_proto_files = find_proto_files("api")
     if not api_proto_files:
@@ -95,7 +95,7 @@ def generate_api():
     run_command(cmd)
 
 
-def build():
+def task_build():
     """Build the application"""
     # Create bin directory if it doesn't exist
     os.makedirs("bin", exist_ok=True)
@@ -119,17 +119,17 @@ def build():
     run_command(cmd)
 
 
-def generate():
+def task_generate():
     """Run go generate and tidy"""
     run_command(['go', 'generate', './...'])
     run_command(['go', 'mod', 'tidy'])
 
 
-def all_targets():
+def task_all_targets():
     """Run all targets"""
-    generate_api()
-    generate_config()
-    generate()
+    task_api()
+    task_config()
+    task_generate()
 
 
 def show_help():
@@ -160,17 +160,17 @@ def main():
     
     try:
         if target == "init":
-            init()
+            task_init()
         elif target == "config":
-            generate_config()
+            task_config()
         elif target == "api":
-            generate_api()
+            task_api()
         elif target == "build":
-            build()
+            task_build()
         elif target == "generate":
-            generate()
+            task_generate()
         elif target == "all":
-            all_targets()
+            task_all_targets()
         elif target == "help":
             show_help()
         else:
