@@ -21,9 +21,9 @@ type Data struct {
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
-	cleanup := func() {
+func NewData(lc fx.Lifecycle, c *conf.Data, logger log.Logger) (*Data, error) {
+	lc.Append(fx.StopHook(func() {
 		log.NewHelper(logger).Info("closing the data resources")
-	}
-	return &Data{}, cleanup, nil
+	}))
+	return &Data{}, nil
 }
