@@ -1,6 +1,10 @@
 package service
 
-import "github.com/google/wire"
+import (
+	"go.uber.org/fx"
+)
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(NewGreeterService)
+var (
+	Providers = fx.Options(fx.Provide(NewGreeterService))
+)

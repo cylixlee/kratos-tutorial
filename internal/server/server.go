@@ -1,8 +1,13 @@
 package server
 
 import (
-	"github.com/google/wire"
+	"go.uber.org/fx"
 )
 
 // ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewGRPCServer, NewHTTPServer)
+var (
+	Providers = fx.Options(
+		fx.Provide(NewGRPCServer),
+		fx.Provide(NewHTTPServer),
+	)
+)

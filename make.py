@@ -51,7 +51,7 @@ def task_init():
         "github.com/go-kratos/kratos/cmd/kratos/v2@latest",
         "github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2@latest",
         "github.com/google/gnostic/cmd/protoc-gen-openapi@latest",
-        "github.com/google/wire/cmd/wire@latest"
+        "go.uber.org/fx@latest"
     ]
     
     for tool in tools:

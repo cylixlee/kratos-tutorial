@@ -1,10 +1,14 @@
-# Kratos Project Template
+# Kratos Tutorial Template
+This branch (`main`) is a template for creating a Kratos project. It has migrated to using `fx` as Dependency Injection framework since `wire` is no longer maintained.
 
-## Install Kratos
+Also, an alternative `make.py` is introduced for those who could not run Makefile (for example, Windows users).
+
+### Install Kratos
 ```
 go install github.com/go-kratos/kratos/cmd/kratos/v2@latest
 ```
-## Create a service
+
+### Create a service
 ```
 # Create a template project
 kratos new server
@@ -21,7 +25,8 @@ go generate ./...
 go build -o ./bin/ ./...
 ./bin/server -conf ./configs
 ```
-## Generate other auxiliary files by Makefile
+
+### Generate other auxiliary files by Makefile
 ```
 # Download and update dependencies
 make init
@@ -30,17 +35,19 @@ make api
 # Generate all files
 make all
 ```
-## Automated Initialization (wire)
-```
-# install wire
-go get github.com/google/wire/cmd/wire
 
-# generate wire
-cd cmd/server
-wire
+### Generate other auxiliary files by `make.py`
+A Python scripts is written to act as a cross-platform Makefile. Python 3 is required.
+```
+# Download and update dependencies
+python make.py init
+# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
+python make.py api
+# Generate all files
+python make.py all
 ```
 
-## Docker
+### Docker
 ```bash
 # build
 docker build -t <your-docker-image-name> .

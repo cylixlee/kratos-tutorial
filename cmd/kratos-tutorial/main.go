@@ -4,7 +4,11 @@ import (
 	"flag"
 	"os"
 
+	"kratos-tutorial/internal/biz"
 	"kratos-tutorial/internal/conf"
+	"kratos-tutorial/internal/data"
+	"kratos-tutorial/internal/server"
+	"kratos-tutorial/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
@@ -15,6 +19,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 
 	_ "go.uber.org/automaxprocs"
+	"go.uber.org/fx"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -33,8 +38,8 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
-	return kratos.New(
+func runApp(logger log.Logger, gs *grpc.Server, hs *http.Server) {
+	app := kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
 		kratos.Version(Version),
@@ -45,11 +50,17 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 			hs,
 		),
 	)
+
+	go func() {
+		if err := app.Run(); err != nil {
+			panic(err)
+		}
+	}()
 }
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stdout),
+	logger := log.With(log.NewStdLogger(os.Stderr),
 		"ts", log.DefaultTimestamp,
 		"caller", log.DefaultCaller,
 		"service.id", id,
@@ -74,14 +85,14 @@ func main() {
 		panic(err)
 	}
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
-	if err != nil {
-		panic(err)
-	}
-	defer cleanup()
-
-	// start and wait for stop signal
-	if err := app.Run(); err != nil {
-		panic(err)
-	}
+	fx.New(
+		server.Providers,
+		data.Providers,
+		biz.Providers,
+		service.Providers,
+		fx.Provide(func() *conf.Server { return bc.Server }),
+		fx.Provide(func() *conf.Data { return bc.Data }),
+		fx.Provide(func() log.Logger { return logger }),
+		fx.Invoke(runApp),
+	).Run()
 }

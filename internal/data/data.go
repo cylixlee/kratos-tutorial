@@ -4,11 +4,16 @@ import (
 	"kratos-tutorial/internal/conf"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/wire"
+	"go.uber.org/fx"
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var (
+	Providers = fx.Options(
+		fx.Provide(NewData),
+		fx.Provide(NewGreeterRepo),
+	)
+)
 
 // Data .
 type Data struct {
