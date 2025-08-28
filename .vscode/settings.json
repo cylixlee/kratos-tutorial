@@ -1,0 +1,13 @@
+{
+    // The Protobuf LSP.
+    //
+    // Specify the `protols` path here if you don't want to put it in PATH. According to Makefile (and `make.py`), the
+    // include paths are provided.
+    "protobuf-support.protols": {
+        "path": "protols",
+        "args": [
+            "--include-paths",
+            "./internal,./third_party",
+        ]
+    }
+}
