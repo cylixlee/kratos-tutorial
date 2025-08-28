@@ -14,7 +14,6 @@ import (
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
 
@@ -60,15 +59,15 @@ func runApp(logger log.Logger, gs *grpc.Server, hs *http.Server) {
 
 func main() {
 	flag.Parse()
-	logger := log.With(log.NewStdLogger(os.Stderr),
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-		"trace.id", tracing.TraceID(),
-		"span.id", tracing.SpanID(),
-	)
+	// logger := log.With(log.NewStdLogger(os.Stderr),
+	// 	"ts", log.DefaultTimestamp,
+	// 	"caller", log.DefaultCaller,
+	// 	"service.id", id,
+	// 	"service.name", Name,
+	// 	"service.version", Version,
+	// 	"trace.id", tracing.TraceID(),
+	// 	"span.id", tracing.SpanID(),
+	// )
 	c := config.New(
 		config.WithSource(
 			file.NewSource(flagconf),
@@ -90,9 +89,9 @@ func main() {
 		data.Providers,
 		biz.Providers,
 		service.Providers,
-		fx.Provide(func() *conf.Server { return bc.Server }),
-		fx.Provide(func() *conf.Data { return bc.Data }),
-		fx.Provide(func() log.Logger { return logger }),
-		fx.Invoke(runApp),
+		// fx.Provide(func() *conf.Server { return bc.Server }),
+		// fx.Provide(func() *conf.Data { return bc.Data }),
+		// fx.Provide(func() log.Logger { return logger }),
+		// fx.Invoke(runApp),
 	).Run()
 }
