@@ -3,8 +3,33 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: Greeter API
     version: 0.0.1
-paths: {}
+paths:
+    /greeter/greet/{name}:
+        get:
+            tags:
+                - Greeter
+            operationId: Greeter_Greet
+            parameters:
+                - name: name
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/greeter.v1.GreetReply'
 components:
-    schemas: {}
+    schemas:
+        greeter.v1.GreetReply:
+            type: object
+            properties:
+                message:
+                    type: string
+tags:
+    - name: Greeter
