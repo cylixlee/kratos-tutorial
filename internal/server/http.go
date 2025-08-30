@@ -13,7 +13,7 @@ import (
 type HTTPServerParams struct {
 	fx.In
 
-	greeterService *greeter.GreeterService
+	GreeterService *greeter.GreeterService
 }
 
 // NewHTTPServer new an HTTP server.
@@ -34,6 +34,6 @@ func NewHTTPServer(params HTTPServerParams, c *conf.Server) *http.Server {
 	}
 	srv := http.NewServer(opts...)
 
-	greeterV1.RegisterGreeterHTTPServer(srv, params.greeterService)
+	greeterV1.RegisterGreeterHTTPServer(srv, params.GreeterService)
 	return srv
 }

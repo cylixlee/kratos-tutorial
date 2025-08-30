@@ -13,7 +13,7 @@ import (
 type GRPCServerParams struct {
 	fx.In
 
-	greeterService *greeter.GreeterService
+	GreeterService *greeter.GreeterService
 }
 
 // NewGRPCServer new a gRPC server.
@@ -34,6 +34,6 @@ func NewGRPCServer(params GRPCServerParams, c *conf.Server) *grpc.Server {
 	}
 	srv := grpc.NewServer(opts...)
 
-	greeterV1.RegisterGreeterServer(srv, params.greeterService)
+	greeterV1.RegisterGreeterServer(srv, params.GreeterService)
 	return srv
 }
