@@ -38,24 +38,14 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "../../configs", "config path, eg: -conf config.yaml")
 }
 
-type RunAppParams struct {
-	fx.In
-
-	GRPC *grpc.Server
-	HTTP *http.Server
-}
-
-func runApp(params RunAppParams, logger log.Logger) {
+func runApp(logger log.Logger, hs *http.Server, gs *grpc.Server) {
 	app := kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
 		kratos.Version(Version),
 		kratos.Metadata(map[string]string{}),
 		kratos.Logger(logger),
-		kratos.Server(
-			params.GRPC,
-			params.HTTP,
-		),
+		kratos.Server(gs, hs),
 	)
 
 	go func() {
