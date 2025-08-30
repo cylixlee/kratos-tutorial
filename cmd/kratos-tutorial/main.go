@@ -87,9 +87,11 @@ func main() {
 		data.Providers,
 		biz.Providers,
 		service.Providers,
-		fx.Provide(func() *conf.Server { return bc.Server }),
-		fx.Provide(func() *conf.Data { return bc.Data }),
-		fx.Provide(func() log.Logger { return logger }),
+		fx.Supply(
+			bc.Server,
+			bc.Data,
+			fx.Annotate(logger, fx.As(new(log.Logger))),
+		),
 		fx.Invoke(runApp),
 	).Run()
 }
