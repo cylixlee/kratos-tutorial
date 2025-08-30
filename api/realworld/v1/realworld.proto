@@ -1,0 +1,231 @@
+syntax = "proto3";
+
+package realworld.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "kratos-tutorial/api/realworld/v1;v1";
+
+service RealWorld {
+  rpc Login(LoginRequest) returns (User) {
+    option (google.api.http) = {
+      post : "/api/users/login"
+      body : "*"
+    };
+  }
+  rpc Register(RegisterRequest) returns (User) {
+    option (google.api.http) = {
+      post : "/api/users"
+      body : "*"
+    };
+  }
+  rpc GetCurrentUser(google.protobuf.Empty) returns (User) {
+    option (google.api.http) = {
+      get : "/api/user"
+    };
+  }
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (google.api.http) = {
+      put : "/api/user"
+      body : "*"
+    };
+  }
+  rpc GetProfile(GetProfileRequest) returns (Profile) {
+    option (google.api.http) = {
+      get : "/api/profiles/{username}"
+    };
+  }
+  rpc FollowUser(FollowUserRequest) returns (Profile) {
+    option (google.api.http) = {
+      post : "/api/profiles/{username}/follow"
+      body : "*"
+    };
+  }
+  rpc UnfollowUser(UnfollowUserRequest) returns (Profile) {
+    option (google.api.http) = {
+      delete : "/api/profiles/{username}/follow"
+    };
+  }
+  rpc ListArticles(ListArticlesRequest) returns (MultipleArticles) {
+    option (google.api.http) = {
+      get : "/api/articles"
+    };
+  }
+  rpc FeedArticles(FeedArticlesRequest) returns (MultipleArticles) {
+    option (google.api.http) = {
+      get : "/api/articles/feed"
+    };
+  }
+  rpc GetArticle(GetArticleRequest) returns (Article) {
+    option (google.api.http) = {
+      get : "/api/articles/{slug}"
+    };
+  }
+  rpc CreateArticle(CreateArticleRequest) returns (Article) {
+    option (google.api.http) = {
+      post : "/api/articles"
+      body : "*"
+    };
+  }
+  rpc UpdateArticle(UpdateArticleRequest) returns (Article) {
+    option (google.api.http) = {
+      put : "/api/articles/{slug}"
+      body : "*"
+    };
+  }
+  rpc DeleteArticle(DeleteArticleRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete : "/api/articles/{slug}"
+    };
+  }
+  rpc AddComment(AddCommentRequest) returns (Comment) {
+    option (google.api.http) = {
+      post : "/api/articles/{slug}/comments"
+      body : "*"
+    };
+  }
+  rpc GetComments(GetCommentsRequest) returns (MultipleComments) {
+    option (google.api.http) = {
+      get : "/api/articles/{slug}/comments"
+    };
+  }
+  rpc DeleteComment(DeleteCommentRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete : "/api/articles/{slug}/comments/{id}"
+    };
+  }
+  rpc FavoriteArticle(FavoriteArticleRequest) returns (Article) {
+    option (google.api.http) = {
+      post : "/api/articles/{slug}/favorite"
+      body : "*"
+    };
+  }
+  rpc UnfavoriteArticle(UnfavoriteArticleRequest) returns (Article) {
+    option (google.api.http) = {
+      delete : "/api/articles/{slug}/favorite"
+    };
+  }
+  rpc GetTags(google.protobuf.Empty) returns (Tags) {
+    option (google.api.http) = {
+      get : "/api/tags"
+    };
+  }
+}
+
+// Request messages.
+
+message LoginRequest {
+  message User {
+    string email = 1;
+    string password = 2;
+  }
+  LoginRequest.User user = 1;
+}
+message RegisterRequest {
+  message User {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+  }
+  RegisterRequest.User user = 1;
+}
+message UpdateUserRequest {
+  message User {
+    optional string email = 1;
+    optional string username = 2;
+    optional string password = 3;
+    optional string image = 4;
+    optional string bio = 5;
+  }
+  UpdateUserRequest.User user = 1;
+}
+message GetProfileRequest { string username = 1; }
+message FollowUserRequest { string username = 1; }
+message UnfollowUserRequest { string username = 1; }
+message ListArticlesRequest {
+  optional string tag = 1;
+  optional string author = 2;
+  optional string favorited = 3;
+  optional int64 limit = 4;
+  optional int64 offset = 5;
+}
+message FeedArticlesRequest {
+  optional int64 limit = 1;
+  optional int64 offset = 2;
+}
+message GetArticleRequest { string slug = 1; }
+message CreateArticleRequest {
+  message Article {
+    string title = 1;
+    string description = 2;
+    string body = 3;
+    repeated string tagList = 4;
+  }
+  CreateArticleRequest.Article article = 1;
+}
+message UpdateArticleRequest {
+  message Article {
+    optional string title = 1;
+    optional string description = 2;
+    optional string body = 3;
+  }
+  UpdateArticleRequest.Article article = 1;
+  string slug = 2;
+}
+message DeleteArticleRequest { string slug = 1; }
+message AddCommentRequest {
+  message Comment { string body = 1; }
+  AddCommentRequest.Comment comment = 1;
+  string slug = 2;
+}
+message GetCommentsRequest { string slug = 1; }
+message DeleteCommentRequest {
+  string slug = 1;
+  int64 id = 2;
+}
+message FavoriteArticleRequest { string slug = 1; }
+message UnfavoriteArticleRequest { string slug = 1; }
+
+// API response format at
+// https://docs.realworld.show/specifications/backend/api-response-format/.
+
+message User {
+  string email = 1;
+  string token = 2;
+  string username = 3;
+  string bio = 4;
+  string image = 5;
+}
+message Profile {
+  string username = 1;
+  string bio = 2;
+  string image = 3;
+  bool following = 4;
+}
+message Article {
+  string slug = 1;
+  string title = 2;
+  string description = 3;
+  string body = 4;
+  repeated string tagList = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+  Profile author = 8;
+  bool favorited = 9;
+  int64 favoritesCount = 10;
+}
+message MultipleArticles {
+  repeated Article articles = 1;
+  int64 articlesCount = 2;
+}
+message Comment {
+  string id = 1;
+  google.protobuf.Timestamp createdAt = 2;
+  google.protobuf.Timestamp updatedAt = 3;
+  string body = 4;
+  Profile author = 5;
+}
+message MultipleComments { repeated Comment comments = 1; }
+message Tags { repeated string tags = 1; }
