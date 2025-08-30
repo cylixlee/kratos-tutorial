@@ -5,6 +5,4 @@ import (
 )
 
 // ProviderSet is service providers.
-var (
-	Providers = fx.Options(fx.Provide(NewGreeterService))
-)
+var Providers = fx.Provide(NewGreeterService)

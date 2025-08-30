@@ -5,6 +5,4 @@ import (
 )
 
 // ProviderSet is biz providers.
-var (
-	Providers = fx.Options(fx.Provide(NewGreeterUsecase))
-)
+var Providers = fx.Provide(NewGreeterUsecase)

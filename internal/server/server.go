@@ -5,9 +5,4 @@ import (
 )
 
 // ProviderSet is server providers.
-var (
-	Providers = fx.Options(
-		fx.Provide(NewGRPCServer),
-		fx.Provide(NewHTTPServer),
-	)
-)
+var Providers = fx.Provide(NewGRPCServer, NewHTTPServer)

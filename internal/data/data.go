@@ -7,13 +7,7 @@ import (
 	"go.uber.org/fx"
 )
 
-// ProviderSet is data providers.
-var (
-	Providers = fx.Options(
-		fx.Provide(NewData),
-		fx.Provide(NewGreeterRepo),
-	)
-)
+var Providers = fx.Provide(NewData, NewGreeterRepo)
 
 // Data .
 type Data struct {
