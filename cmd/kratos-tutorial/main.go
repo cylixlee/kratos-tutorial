@@ -6,7 +6,6 @@ import (
 
 	"kratos-tutorial/internal/biz"
 	"kratos-tutorial/internal/conf"
-	"kratos-tutorial/internal/server"
 	"kratos-tutorial/internal/service"
 
 	"github.com/go-kratos/kratos/v2"
@@ -87,10 +86,11 @@ func main() {
 	fx.New(
 		biz.Providers,
 		service.Providers,
-		server.Providers,
-		fx.Provide(func() *conf.Server { return bc.Server }),
-		fx.Provide(func() *conf.Data { return bc.Data }),
-		fx.Provide(func() log.Logger { return logger }),
+		fx.Supply(
+			bc.Server,
+			bc.Data,
+			fx.Annotate(logger, fx.As(new(log.Logger))),
+		),
 		fx.Invoke(runApp),
 	).Run()
 }
