@@ -1,16 +1,23 @@
 package server
 
 import (
-	v1 "kratos-tutorial/api/greeter/v1"
+	greeterV1 "kratos-tutorial/api/greeter/v1"
 	"kratos-tutorial/internal/conf"
 	"kratos-tutorial/internal/service/greeter"
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
+	"go.uber.org/fx"
 )
 
+type HTTPServerParams struct {
+	fx.In
+
+	greeterService *greeter.GreeterService
+}
+
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *greeter.GreeterService) *http.Server {
+func NewHTTPServer(params HTTPServerParams, c *conf.Server) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -26,6 +33,7 @@ func NewHTTPServer(c *conf.Server, greeter *greeter.GreeterService) *http.Server
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, greeter)
+
+	greeterV1.RegisterGreeterHTTPServer(srv, params.greeterService)
 	return srv
 }

@@ -6,4 +6,4 @@ import (
 	"go.uber.org/fx"
 )
 
-var Providers = fx.Options(fx.Provide(greeter.NewGreeterService))
+var Providers = fx.Provide(greeter.NewGreeterService)
